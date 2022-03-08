@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addons>
-<addon id="plugin.video.matrix" name="netflix" version="4.9.5" provider-name="arabiflix">
+<addon id="plugin.video.netflix" name="netflix" version="4.9.5" provider-name="arabiflix">
     <requires>
 
         <trycatch>
@@ -27,19 +27,19 @@
     <extension point="kodi.context.item">
         <menu id="kodi.core.main">
             <item library="resources/lib/gui/menuInformation.py">
-		        <label>$ADDON[plugin.video.matrix 30208]</label>
+		        <label>$ADDON[plugin.video.netflix 30208]</label>
 				<visible>Window.IsVisible(home) + ListItem.Property(sMeta)</visible>
             </item>
             <item library="resources/lib/gui/menuAddBookmark.py">
-		        <label>$ADDON[plugin.video.matrix 30210]</label>
+		        <label>$ADDON[plugin.video.netflix 30210]</label>
 				<visible>Window.IsVisible(home) + !ListItem.Property(isBookmark) + ListItem.Property(sMeta)</visible>
             </item>
             <item library="resources/lib/gui/menuSimil.py">
-		        <label>$ADDON[plugin.video.matrix 30213]</label>
+		        <label>$ADDON[plugin.video.netflix 30213]</label>
 				<visible>Window.IsVisible(home) + ListItem.Property(sMeta)</visible>
             </item>
             <item library="resources/lib/gui/menuDelBookmark.py">
-		        <label>$ADDON[plugin.video.matrix 30412]</label>
+		        <label>$ADDON[plugin.video.netflix 30412]</label>
 				<visible>Window.IsVisible(home) + ListItem.Property(isBookmark)</visible>
             </item>
 		</menu>
@@ -47,7 +47,7 @@
 
     <extension point="xbmc.service" library="service.py"/>
     <extension point="xbmc.addon.metadata">
-        <news>plugin.video.matrix-4.9.4</news>
+        <news>plugin.video.netflix-4.9.5</news>
         <summary lang="en">https://arabiflix.github.io/zip</summary>
         <summary lang="fr">https://arabiflix.github.io/zip</summary>
         <description lang="en">https://arabiflix.github.io/zip</description>
@@ -82,7 +82,7 @@
         </extension>
         <extension point="xbmc.addon.metadata">
             <summary>arabic vod addon</summary>
-            <description>support: "Matrix : arabic vod addon" group on facebook</description>
+            <description>support: "netflix : arabic vod addon" group on facebook</description>
             <platform>all</platform>
     </extension>
 </addon>
