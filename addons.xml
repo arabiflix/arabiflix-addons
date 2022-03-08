@@ -17,7 +17,7 @@
         <import addon="script.module.resolveurl" version="5.1.1"/>
         <import addon="script.module.requests" version="2.9.1"/>
         <import addon="script.module.dnspython" optional="true"/>
-        <import addon="repository.arabiflix" version="0.0.6"/>
+        <import addon="repository.arabi" version="0.0.6"/>
 	    <import addon="script.video.F4mProxy" optional="true"/>
     </requires>
     <extension point="xbmc.python.pluginsource" library="default.py">
@@ -58,7 +58,7 @@
     </extension>
 </addon>
 
-    <addon id="repository.arabiflix" 
+    <addon id="repository.arabi" 
 			name="arabiflix Repository" 
 			version="0.0.6" 
 			provider-name="arabiflix">
