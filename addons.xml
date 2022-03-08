@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<addons>
+<addon id="plugin.video.matrix" name="matrix" version="4.9.4" provider-name="arabiflix">
+    <requires>
+
+        <trycatch>
+            <try>
+                <import addon="xbmc.python" version="3.6.0"/>
+            </try>
+
+            <catch>
+                <import addon="xbmc.python" version="2.24.0"/>
+            </catch>
+        </trycatch>
+        <import addon="script.kodi.loguploader" version="0.6.0"/>
+        <import addon="script.module.simplejson" version="3.3.0"/>
+        <import addon="script.module.resolveurl" version="5.1.1"/>
+        <import addon="script.module.requests" version="2.9.1"/>
+        <import addon="script.module.dnspython" optional="true"/>
+        <import addon="repository.arabiflix" version="0.0.6"/>
+	    <import addon="script.video.F4mProxy" optional="true"/>
+    </requires>
+    <extension point="xbmc.python.pluginsource" library="default.py">
+        <provides>video</provides>
+    </extension>
+ 
+    <extension point="kodi.context.item">
+        <menu id="kodi.core.main">
+            <item library="resources/lib/gui/menuInformation.py">
+		        <label>$ADDON[plugin.video.matrix 30208]</label>
+				<visible>Window.IsVisible(home) + ListItem.Property(sMeta)</visible>
+            </item>
+            <item library="resources/lib/gui/menuAddBookmark.py">
+		        <label>$ADDON[plugin.video.matrix 30210]</label>
+				<visible>Window.IsVisible(home) + !ListItem.Property(isBookmark) + ListItem.Property(sMeta)</visible>
+            </item>
+            <item library="resources/lib/gui/menuSimil.py">
+		        <label>$ADDON[plugin.video.matrix 30213]</label>
+				<visible>Window.IsVisible(home) + ListItem.Property(sMeta)</visible>
+            </item>
+            <item library="resources/lib/gui/menuDelBookmark.py">
+		        <label>$ADDON[plugin.video.matrix 30412]</label>
+				<visible>Window.IsVisible(home) + ListItem.Property(isBookmark)</visible>
+            </item>
+		</menu>
+    </extension>
+
+    <extension point="xbmc.service" library="service.py"/>
+    <extension point="xbmc.addon.metadata">
+        <news>plugin.video.matrix-4.9.4</news>
+        <summary lang="en">https://arabiflix.github.io/zip</summary>
+        <summary lang="fr">https://arabiflix.github.io/zip</summary>
+        <description lang="en">https://arabiflix.github.io/zip</description>
+        <platform>all</platform>
+        <license>GNU GENERAL PUBLIC LICENSE</license>
+        <forum>https://github.com/arabiflix/arabiflix-addons/issues</forum>
+		<source>https://github.com/arabiflix/arabiflix-addons/</source>
+    </extension>
+</addon>
+
+    <addon id="repository.arabiflix" 
+			name="arabiflix Repository" 
+			version="0.0.6" 
+			provider-name="arabiflix">
+        <extension point="xbmc.addon.repository" name="arabiflix Repository">
+            <dir>
+			<info compressed="false">https://raw.githubusercontent.com/arabiflix/arabiflix-addons/master/addons.xml</info>
+            <checksum>https://raw.githubusercontent.com/arabiflix/arabiflix-addons/master/addons.xml.md5</checksum>
+            <datadir zip="true">https://github.com/arabiflix/arabiflix-addons/raw/master/repo</datadir>
+            <hashes>false</hashes>
+			</dir>
+            <dir>
+                <info compressed="false">https://raw.githubusercontent.com/Gujal00/smrzips/master/addons.xml</info>
+                <checksum>https://raw.githubusercontent.com/Gujal00/smrzips/master/addons.xml.md5</checksum>
+                <datadir zip="true">https://raw.githubusercontent.com/Gujal00/smrzips/master/zips/</datadir>
+            </dir>
+            <dir>
+                <info compressed="false">https://raw.githubusercontent.com/jsergio123/zips/master/addons.xml</info>
+                <checksum>https://raw.githubusercontent.com/jsergio123/zips/master/addons.xml.md5</checksum>
+                <datadir zip="true">https://raw.githubusercontent.com/jsergio123/zips/master/</datadir>
+            </dir>
+        </extension>
+        <extension point="xbmc.addon.metadata">
+            <summary>arabic vod addon</summary>
+            <description>support: "Matrix : arabic vod addon" group on facebook</description>
+            <platform>all</platform>
+    </extension>
+</addon>
+</addons>
