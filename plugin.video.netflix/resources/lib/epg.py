@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 # Venom.
-from resources.lib.comaddon import dialog, isNetlfix
+from resources.lib.comaddon import dialog, isNetflix
 from datetime import datetime
 
 import xml.etree.ElementTree as ET
@@ -69,7 +69,7 @@ class cePg:
             text += "\r\n"
             
             
-        if not isNetlfix():
+        if not isNetflix():
             text = text.encode('utf8')
         return text
 
@@ -147,7 +147,7 @@ class cePg:
             if isinstance(name, str):
                 name = unicode(name, 'utf-8')
             name = unicodedata.normalize('NFD', name).encode('ascii', 'ignore').decode('unicode_escape')
-            if not isNetlfix():
+            if not isNetflix():
                 name = name.encode('utf-8')  # on repasse en utf-8
         except Exception as e:
             pass

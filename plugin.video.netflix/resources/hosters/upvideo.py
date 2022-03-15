@@ -5,7 +5,7 @@ from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.hosters.hoster import iHoster
 from resources.lib.hunter import hunter
-from resources.lib.comaddon import VSlog, isNetlfix
+from resources.lib.comaddon import VSlog, isNetflix
 import re
 import base64
 
@@ -82,7 +82,7 @@ class cHoster(iHoster):
                         VSlog('er2')
                     v2 = r.group(1).split('aHR0')[1].split('YTk0NT')[0]
 
-                    if isNetlfix():
+                    if isNetflix():
                         api_call = "htt" + (base64.b64decode(v2).decode())
                     else:
                         api_call = "htt" + base64.b64decode(v2)

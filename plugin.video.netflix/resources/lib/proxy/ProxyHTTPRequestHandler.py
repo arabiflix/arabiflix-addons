@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # https://github.com/Kodi-vStream/venom-xbmc-addons
-from resources.lib.comaddon import isNetlfix, VSlog
+from resources.lib.comaddon import isNetflix, VSlog
 
 try:  # Python 2
     from BaseHTTPServer import BaseHTTPRequestHandler
@@ -40,13 +40,13 @@ class ProxyHTTPRequestHandler(BaseHTTPRequestHandler):
         if '?msKey=' in url:
             ret = res.content[8:]
         else:
-            if isNetlfix(): res = res.content.decode()
+            if isNetflix(): res = res.content.decode()
             res = res.replace('http','http://127.0.0.1:2424?u=http')
             
             if res.endswith("=="):
                ret = base64.b64decode(res)
             else:
-                if isNetlfix(): ret = res.encode()
+                if isNetflix(): ret = res.encode()
 
         self.send_response_only(200)
         self.send_header('Content-Length', len(ret))

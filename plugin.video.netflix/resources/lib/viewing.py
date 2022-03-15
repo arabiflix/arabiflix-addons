@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # https://github.com/Kodi-vStream/venom-xbmc-addons
 # Venom.
-from resources.lib.comaddon import dialog, addon, xbmc, isNetlfix
+from resources.lib.comaddon import dialog, addon, xbmc, isNetflix
 from resources.lib.db import cDb
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
@@ -75,7 +75,7 @@ class cViewing:
                 except:
                     siteurl = data['siteurl']
 
-                if isNetlfix():
+                if isNetflix():
                     siteurl = UnquotePlus(siteurl.decode('utf-8'))
                     title = str(title, 'utf-8')
                 else:

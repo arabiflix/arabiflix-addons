@@ -3,7 +3,7 @@
 # https://www.pstream.net/e/xxxxx
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.hosters.hoster import iHoster
-from resources.lib.comaddon import dialog, VSPath, isNetlfix, VSlog
+from resources.lib.comaddon import dialog, VSPath, isNetflix, VSlog
 from resources.lib.parser import cParser
 from resources.lib.util import urlEncode
 import base64
@@ -90,7 +90,7 @@ class cHoster(iHoster):
 
         for i in code[1]:
             try:
-                if isNetlfix():
+                if isNetflix():
                     code = base64.b64decode(i).decode('ascii')
                 else:
                     code = base64.b64decode(i)

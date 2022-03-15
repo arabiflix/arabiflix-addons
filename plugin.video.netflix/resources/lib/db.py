@@ -5,7 +5,7 @@ import xbmcvfs, json
 
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.util import QuotePlus, Unquote
-from resources.lib.comaddon import dialog, addon, VSlog, VSPath, isNetlfix, xbmc
+from resources.lib.comaddon import dialog, addon, VSlog, VSPath, isNetflix, xbmc
 
 SITE_IDENTIFIER = 'cDb'
 SITE_NAME = 'DB'
@@ -157,7 +157,7 @@ class cDb:
 
     # Ne pas utiliser cette fonction pour les chemins
     def str_conv(self, data):
-        if not isNetlfix():
+        if not isNetflix():
             if isinstance(data, str):
                 # Must be encoded in UTF-8
                 try:

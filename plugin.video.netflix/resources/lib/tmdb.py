@@ -9,7 +9,7 @@ import string
 import xbmcvfs
 import json
 import unicodedata
-from resources.lib.comaddon import addon, dialog, VSlog, VSPath, isNetlfix, xbmc, xbmcgui
+from resources.lib.comaddon import addon, dialog, VSlog, VSPath, isNetflix, xbmc, xbmcgui
 from resources.lib.util import QuotePlus
 from resources.lib.handler.requestHandler import cRequestHandler
 
@@ -60,7 +60,7 @@ class cTMDb:
     CACHE = 'special://home/userdata/addon_data/plugin.video.netflix/video_cache.db'
 
     # important seul xbmcvfs peux lire le special
-    if not isNetlfix():
+    if not isNetflix():
         REALCACHE = VSPath(CACHE).decode('utf-8')
     else:
         REALCACHE = VSPath(CACHE)
@@ -614,7 +614,7 @@ class cTMDb:
                 else:
                     _meta['genre'] += ' / ' + genre
 
-            if not isNetlfix():
+            if not isNetflix():
                 _meta['genre'] = unicode(_meta['genre'], 'utf-8')
 
         elif 'parts' in meta:   # Il s'agit d'une collection, on récupere le genre du premier film
@@ -626,7 +626,7 @@ class cTMDb:
                 else:
                     _meta['genre'] += ' / ' + genre
 
-            if not isNetlfix():
+            if not isNetflix():
                 _meta['genre'] = unicode(_meta['genre'], 'utf-8')
        
         if 'overview' in meta and meta['overview']:
@@ -745,7 +745,7 @@ class cTMDb:
         try:
             title = unicode(title, 'utf-8')
             title = unicodedata.normalize('NFD', title).encode('ascii', 'ignore').decode('unicode_escape')
-            if not isNetlfix():
+            if not isNetflix():
                 title = title.encode('utf-8')  # on repasse en utf-8
         except Exception as e:
             pass

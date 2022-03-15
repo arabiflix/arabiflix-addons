@@ -14,7 +14,7 @@ import xbmcvfs
 import xbmcgui
 import xbmc
 
-from resources.lib.comaddon import addon, dialog, progress, VSlog, VSupdate, VSPath, isNetlfix
+from resources.lib.comaddon import addon, dialog, progress, VSlog, VSupdate, VSPath, isNetflix
 from resources.lib.db import cDb
 from resources.lib.gui.gui import cGui
 from resources.lib.gui.guiElement import cGuiElement
@@ -570,7 +570,7 @@ class cDownload:
 
             if size:
                 
-                if isNetlfix():
+                if isNetflix():
                     try:
                         title = title.decode()
                     except:

@@ -9,7 +9,7 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.comaddon import progress, VSlog, isNetlfix
+from resources.lib.comaddon import progress, VSlog, isNetflix
 	 
 SITE_IDENTIFIER = 'aflamfree'
 SITE_NAME = 'aflamfree'

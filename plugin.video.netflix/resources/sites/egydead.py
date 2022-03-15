@@ -5,7 +5,7 @@ from resources.lib.gui.gui import cGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
-from resources.lib.comaddon import progress, isNetlfix, VSlog
+from resources.lib.comaddon import progress, isNetflix, VSlog
 from resources.lib.parser import cParser
 import re
  
@@ -677,7 +677,7 @@ def showHosters2():
     data = {'View':'1'}
     r = s.post(sUrl, data = data)
     sHtmlContent = r.content
-    if isNetlfix(): 
+    if isNetflix(): 
        sHtmlContent = sHtmlContent.decode('utf8',errors='ignore')
     
 
@@ -766,7 +766,7 @@ def showHosters():
     data = {'View':'1'}
     r = s.post(sUrl, data = data)
     sHtmlContent = r.content
-    if isNetlfix(): 
+    if isNetflix(): 
        sHtmlContent = sHtmlContent.decode('utf8',errors='ignore')
     
 

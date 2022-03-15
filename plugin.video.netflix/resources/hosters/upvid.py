@@ -5,7 +5,7 @@ from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.hosters.hoster import iHoster
 from resources.lib.aadecode import AADecoder
-from resources.lib.comaddon import isNetlfix
+from resources.lib.comaddon import isNetflix
 from resources.lib.comaddon import VSlog
 import base64,re
 UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:56.0) Gecko/20100101 Firefox/56.0'
@@ -110,7 +110,7 @@ class cHoster(iHoster):
                 oRequest.addHeaderEntry('User-Agent',UA)
                 oRequest.addHeaderEntry('Referer',sUrl)
                 sHtmlContent = oRequest.request()
-                if isNetlfix():
+                if isNetflix():
                    sHtmlContent = str(sHtmlContent.encode('latin-1'),'utf-8')
                 sHtmlContent = sHtmlContent.replace('\n','')
 

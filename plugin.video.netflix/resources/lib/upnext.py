@@ -6,7 +6,7 @@ import xbmcvfs
 import sys
 import re
 from base64 import b64encode
-from resources.lib.comaddon import dialog, addon, addonManager, VSlog, isNetlfix
+from resources.lib.comaddon import dialog, addon, addonManager, VSlog, isNetflix
 from resources.lib.gui.gui import cGui
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
@@ -231,7 +231,7 @@ class UpNext:
             # if not isinstance(next_data, bytes):
             next_data = next_data.encode('utf-8')
             data = b64encode(next_data)
-            if isNetlfix():
+            if isNetflix():
                 data = data.decode('ascii')
 
             jsonrpc_request = {

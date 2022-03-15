@@ -6,7 +6,7 @@
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
 from resources.hosters.hoster import iHoster
-from resources.lib.comaddon import VSlog, isNetlfix, xbmc
+from resources.lib.comaddon import VSlog, isNetflix, xbmc
 
 import time, random, base64
 
@@ -96,7 +96,7 @@ class cHoster(iHoster):
             sHtmlContent = oRequest.request()
             urlDonwload = oRequest.getRealUrl()
         else:
-            if isNetlfix():
+            if isNetflix():
                 import urllib.request as urllib
             else:
                 import urllib

@@ -10,7 +10,7 @@ from resources.lib.aadecode import decodeAA
 from resources.lib.packer import cPacker
 from resources.lib.aadecode import AADecoder
 import re
-from resources.lib.comaddon import VSlog, isNetlfix
+from resources.lib.comaddon import VSlog, isNetflix
 
 UA = 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:72.0) Gecko/20100101 Firefox/72.0'
 

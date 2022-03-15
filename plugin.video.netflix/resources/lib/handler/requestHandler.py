@@ -2,7 +2,7 @@
 # vStream https://github.com/Kodi-vStream/venom-xbmc-addons
 #
 from requests import post, Session, Request, RequestException, ConnectionError
-from resources.lib.comaddon import addon, dialog, VSlog, VSPath, isNetlfix
+from resources.lib.comaddon import addon, dialog, VSlog, VSPath, isNetflix
 from resources.lib.util import urlEncode
 
 import requests.packages.urllib3.util.connection as urllib3_cn
@@ -207,7 +207,7 @@ class cRequestHandler:
             else:
                 sContent = self.oResponse.content
                 #Necessaire pour Python 3
-                if isNetlfix() and not 'youtube' in self.oResponse.url:
+                if isNetflix() and not 'youtube' in self.oResponse.url:
                     try:
                        sContent = sContent.decode()
                     except:
@@ -321,7 +321,7 @@ class cRequestHandler:
             import sys
             import dns.resolver
 
-            if isNetlfix():
+            if isNetflix():
                 path = VSPath('special://home/addons/script.module.dnspython/lib/')
             else:
                 path = VSPath('special://home/addons/script.module.dnspython/lib/').decode('utf-8')
@@ -386,7 +386,7 @@ def __randy_boundary(length=10, reshuffle=False):
     import string
     import random
 
-    if isNetlfix():
+    if isNetflix():
         character_string = string.ascii_letters + string.digits
     else:
         character_string = string.letters + string.digits

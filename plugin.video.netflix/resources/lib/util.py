@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # https://github.com/Kodi-vStream/venom-xbmc-addons
-from resources.lib.comaddon import xbmc, isNetlfix
+from resources.lib.comaddon import xbmc, isNetflix
 try:
     import htmlentitydefs
     import urllib
@@ -100,7 +100,7 @@ class cUtil:
         return re.sub('&#?\w+;', fixup, text)
 		
     def titleWatched(self, title):
-        if not isNetlfix():
+        if not isNetflix():
             if isinstance(title, str):
                 # Must be encoded in UTF-8
                 try:
@@ -126,7 +126,7 @@ class cUtil:
 
 
     def CleanName(self, name):
-        if not isNetlfix():
+        if not isNetflix():
             # vire accent et '\'
             try:
                 name = unicode(name, 'utf-8')  # converti en unicode pour aider aux convertions
@@ -219,7 +219,7 @@ class cUtil:
             serieTitle = serieTitle[:serieTitle.index('|')]
 
         # on repasse en utf-8
-        if not isNetlfix():
+        if not isNetflix():
             return serieTitle.encode('utf-8')
         return serieTitle
 

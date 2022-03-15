@@ -6,7 +6,7 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.comaddon import progress, VSlog, isNetlfix
+from resources.lib.comaddon import progress, VSlog, isNetflix
 import re
  
 SITE_IDENTIFIER = 'arbcinema'
@@ -125,7 +125,7 @@ def showMovies(sSearch = ''):
  
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request() 
-    if isNetlfix(): 
+    if isNetflix(): 
        sHtmlContent = str(sHtmlContent.encode('latin-1',errors='ignore'),'utf-8',errors='ignore')
   # ([^<]+) .+?
 

@@ -3,7 +3,7 @@
 #
 from resources.lib.config import GestionCookie
 from resources.hosters.hoster import iHoster
-from resources.lib.comaddon import dialog, VSlog, isNetlfix, CountdownDialog, xbmc, VSPath
+from resources.lib.comaddon import dialog, VSlog, isNetflix, CountdownDialog, xbmc, VSPath
 from resources.lib.handler.premiumHandler import cPremiumHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser

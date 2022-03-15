@@ -170,7 +170,7 @@ class CountdownDialog(object):
                 pd = xbmcgui.DialogProgress()
             if not self.line3:
                 line3 = 'Expires in: %s seconds' % countdown
-            if not isNetlfix():
+            if not isNetflix():
                 pd.create(self.heading, line1, line2, line3)
             else:
                 pd.create(self.heading, line1 + '\n' + line2 + '\n' + line3)
@@ -230,7 +230,7 @@ class CountdownDialog(object):
         if not line3:
             line3 = self.line3
         if self.pd is not None:
-            if not isNetlfix():
+            if not isNetflix():
                 self.pd.update(percent, line1, line2, line3)
             else:
                 self.pd.update(percent, line1 + '\n' + line2 + '\n' + line3)
@@ -377,7 +377,7 @@ def isKrypton():
     except:
         return False
 
-def isNetlfix():
+def isNetflix():
     try:
         version = xbmc.getInfoLabel('system.buildversion')
         if version[0:2] >= '19':
@@ -399,7 +399,7 @@ def isNexus():
 
 #Transforme les "special" en chemin normal.
 def VSPath(pathSpecial):
-    if isNetlfix():
+    if isNetflix():
         path = xbmcvfs.translatePath(pathSpecial)
     else:
         path = xbmc.translatePath(pathSpecial)

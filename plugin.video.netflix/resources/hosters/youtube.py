@@ -11,7 +11,7 @@ import requests
 import time
 
 from resources.hosters.hoster import iHoster
-from resources.lib.comaddon import dialog, isNetlfix
+from resources.lib.comaddon import dialog, isNetflix
 from resources.lib.config import GestionCookie
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser

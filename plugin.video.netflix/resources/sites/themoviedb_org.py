@@ -4,7 +4,7 @@ from resources.lib.gui.gui import cGui
 from resources.lib.gui.guiElement import cGuiElement
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
-from resources.lib.comaddon import progress, addon, dialog, VSupdate, xbmc, isNetlfix, VSlog
+from resources.lib.comaddon import progress, addon, dialog, VSupdate, xbmc, isNetflix, VSlog
 from resources.lib.parser import cParser
 from resources.lib.util import cUtil
 from resources.lib.tmdb import cTMDb
@@ -379,7 +379,7 @@ def showGenreMovie():
         for i in result['genres']:
             sId, sTitle = i['id'], i['name']
 
-            if not isNetlfix():
+            if not isNetflix():
                 sTitle = sTitle.encode("utf-8")
             sUrl = 'genre/' + str(sId) + '/movies'
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
@@ -402,7 +402,7 @@ def showGenreTV():
         for i in result['genres']:
             sId, sTitle = i['id'], i['name']
 
-            if not isNetlfix():
+            if not isNetflix():
                 sTitle = sTitle.encode("utf-8")
             # sUrl = API_URL + '/genre/' + str(sId) + '/tv'
             sUrl = 'discover/tv'
@@ -508,7 +508,7 @@ def showMovies(sSearch=''):
 
                 sId, sTitle, sGenre, sThumb, sFanart, sDesc, sYear = i['tmdb_id'], i['title'], i['genre'], i['poster_path'], i['backdrop_path'], i['plot'], i['year']
 
-                if not isNetlfix():
+                if not isNetflix():
                     sTitle = sTitle.encode("utf-8")
 
                 oOutputParameterHandler = cOutputParameterHandler()
@@ -518,7 +518,7 @@ def showMovies(sSearch=''):
                 oOutputParameterHandler.addParameter('sTmdbId', sId)
                 oOutputParameterHandler.addParameter('type', 'film')
 
-                if isNetlfix():
+                if isNetflix():
                     oOutputParameterHandler.addParameter('searchtext', sTitle)
                 else:
                     oOutputParameterHandler.addParameter('searchtext', cUtil().CleanName(sTitle))
@@ -609,7 +609,7 @@ def showSeries(sSearch=''):
                 i = grab._format(i, '',"tvshow")
                 sId, sTitle, sGenre, sThumb, sFanart, sDesc, sYear = i['tmdb_id'], i['title'], i['genre'], i['poster_path'], i['backdrop_path'], i['plot'], i['year']
 
-                if not isNetlfix():
+                if not isNetflix():
                     sTitle = sTitle.encode("utf-8")
                 sSiteUrl = 'tv/' + str(sId)
 
@@ -620,7 +620,7 @@ def showSeries(sSearch=''):
                 oOutputParameterHandler.addParameter('sId', sId)
                 oOutputParameterHandler.addParameter('sFanart', sFanart)
                 oOutputParameterHandler.addParameter('sTmdbId', sId)
-                if isNetlfix():
+                if isNetflix():
                     oOutputParameterHandler.addParameter('searchtext', sTitle)
                 else:
                     oOutputParameterHandler.addParameter('searchtext', cUtil().CleanName(sTitle))
@@ -689,7 +689,7 @@ def showSeriesSaison():
     oOutputParameterHandler.addParameter('siteUrl', sMovieTitle)
     # oOutputParameterHandler.addParameter('type', 'serie')
     # oOutputParameterHandler.addParameter('searchtext', sMovieTitle)
-    if not isNetlfix():
+    if not isNetflix():
         oOutputParameterHandler.addParameter('searchtext', cUtil().CleanName(sMovieTitle))
     else:
         oOutputParameterHandler.addParameter('searchtext', sMovieTitle)
@@ -785,7 +785,7 @@ def showSeriesEpisode():
     search = '%s S%02d' % (sMovieTitle, int(sSeason))
     # oOutputParameterHandler.addParameter('searchtext', search)
 
-    if not isNetlfix():
+    if not isNetflix():
         oOutputParameterHandler.addParameter('searchtext', cUtil().CleanName(search))
     else:
         oOutputParameterHandler.addParameter('searchtext', search)
@@ -816,7 +816,7 @@ def showSeriesEpisode():
             i = grab._format(i, '')
             sTitle, sGenre, sThumb, sFanart, sDesc, sYear = i['title'], i['genre'], i['poster_path'], i['backdrop_path'], i['plot'], i['year']
 
-            if not isNetlfix():
+            if not isNetflix():
                 sTitle = sTitle.encode("utf-8")
 
             sTitle = 'S%s E%s %s' % (sSeason, str(sEpNumber), sTitle)
@@ -830,7 +830,7 @@ def showSeriesEpisode():
             oOutputParameterHandler.addParameter('sEpisode', sEpNumber)
             oOutputParameterHandler.addParameter('type', 'serie')
 
-            if not isNetlfix():
+            if not isNetflix():
                 oOutputParameterHandler.addParameter('searchtext', cUtil().CleanName(sMovieTitle))
             else:
                 oOutputParameterHandler.addParameter('searchtext', sMovieTitle)
@@ -908,7 +908,7 @@ def showActors(sSearch=''):
             oOutputParameterHandler.addParameter('siteUrl', sUrl)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
 
-            if not isNetlfix():
+            if not isNetflix():
                 sName = sName.encode('utf-8')
             oOutputParameterHandler.addParameter('siteUrl', 'person/' + str(i['id']) + '/movie_credits')
             sTitle = str(sName)
@@ -974,7 +974,7 @@ def showFilmActor():
 
             sId, sTitle, sGenre, sThumb, sFanart, sDesc, sYear = i['tmdb_id'], i['title'], i['genre'], i['poster_path'], i['backdrop_path'], i['plot'], i['year']
 
-            if not isNetlfix():
+            if not isNetflix():
                 sTitle = sTitle.encode("utf-8")
             oOutputParameterHandler.addParameter('siteUrl', 'http://tmdb/%s' % sId)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
@@ -982,7 +982,7 @@ def showFilmActor():
             oOutputParameterHandler.addParameter('sTmdbId', sId)
             oOutputParameterHandler.addParameter('type', 'film')
 
-            if not isNetlfix():
+            if not isNetflix():
                 oOutputParameterHandler.addParameter('searchtext', cUtil().CleanName(sTitle))
             else:
                 oOutputParameterHandler.addParameter('searchtext', sTitle)
@@ -1043,7 +1043,7 @@ def showLists():
 
             sId, sTitle, sType, sThumb, sFanart, sVote, sDesc, sYear = i['tmdb_id'], i['title'], i['media_type'], i['poster_path'], i['backdrop_path'], i['rating'], i['plot'], i['year']
 
-            if not isNetlfix():
+            if not isNetflix():
 
 
                 sTitle = sTitle.encode("utf-8")
@@ -1057,7 +1057,7 @@ def showLists():
             oOutputParameterHandler.addParameter('sFanart', sFanart)
             oOutputParameterHandler.addParameter('sTmdbId', sId)
 
-            if isNetlfix():
+            if isNetflix():
                 oOutputParameterHandler.addParameter('searchtext', sTitle)
             else:
                 oOutputParameterHandler.addParameter('searchtext', cUtil().CleanName(sTitle))

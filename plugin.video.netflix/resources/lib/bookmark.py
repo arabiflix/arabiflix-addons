@@ -7,7 +7,7 @@ from resources.lib.gui.guiElement import cGuiElement
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
-from resources.lib.comaddon import dialog, addon, xbmc, isNetlfix
+from resources.lib.comaddon import dialog, addon, xbmc, isNetflix
 from resources.lib.util import UnquotePlus
 
 SITE_IDENTIFIER = 'cFav'
@@ -124,7 +124,7 @@ class cFav:
                 except:
                     siteurl = data['siteurl']
 
-                if isNetlfix():
+                if isNetflix():
                     siteurl = UnquotePlus(siteurl.decode('utf-8'))
                     title = str(title, 'utf-8')
                 else:

@@ -8,7 +8,7 @@ from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.comaddon import progress, isNetlfix
+from resources.lib.comaddon import progress, isNetflix
  
 SITE_IDENTIFIER = 'ahdaf'
 SITE_NAME = 'ahdaf'
@@ -40,9 +40,9 @@ def showMovies(sSearch = ''):
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
     
-    if not isNetlfix():
+    if not isNetflix():
        sHtmlContent = sHtmlContent.decode("windows-1256").encode("utf-8")
-    if isNetlfix():
+    if isNetflix():
        sHtmlContent = sHtmlContent.encode('cp1252').decode('cp1256')
  
 # ([^<]+) .+?
@@ -89,9 +89,9 @@ def showLive():
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
     
-    if not isNetlfix():
+    if not isNetflix():
        sHtmlContent = sHtmlContent.decode("windows-1256").encode("utf-8")
-    if isNetlfix():
+    if isNetflix():
        sHtmlContent = sHtmlContent.encode('cp1252').decode('cp1256')
     # (.+?) ([^<]+)
     sPattern = '<a href="([^<]+)" id="thread_title_.+?">([^<]+)</a>'
@@ -127,9 +127,9 @@ def showHosters():
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request();
     
-    if not isNetlfix():
+    if not isNetflix():
        sHtmlContent = sHtmlContent.decode("windows-1256").encode("utf-8")
-    if isNetlfix():
+    if isNetflix():
        sHtmlContent = sHtmlContent.encode('cp1252').decode('cp1256')
 
          # (.+?) ([^<]+)   

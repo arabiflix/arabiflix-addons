@@ -1,6 +1,6 @@
 ﻿from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.comaddon import VSlog, xbmcgui, isNetlfix
+from resources.lib.comaddon import VSlog, xbmcgui, isNetflix
 from resources.hosters.hoster import iHoster
 from resources.lib.packer import cPacker
 import re,xbmcgui
@@ -64,7 +64,7 @@ class cHoster(iHoster):
         oRequest = cRequestHandler(self.__sUrl)
         oRequest.addHeaderEntry('Referer',self.__sUrl)
         sHtmlContent = oRequest.request()
-        if isNetlfix():
+        if isNetflix():
            sHtmlContent = str(sHtmlContent.encode('latin-1'),'utf-8')
         #VSlog(sHtmlContent)
         oParser = cParser()

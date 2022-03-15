@@ -5,7 +5,7 @@ from resources.lib.gui.gui import cGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
-from resources.lib.comaddon import progress, VSlog, isNetlfix
+from resources.lib.comaddon import progress, VSlog, isNetflix
 from resources.lib.parser import cParser
 import re
  
@@ -232,7 +232,7 @@ def showAnimes(sSearch = ''):
  
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
-    if isNetlfix(): 
+    if isNetflix(): 
        sHtmlContent = str(sHtmlContent.encode('latin-1',errors='ignore'),'utf-8',errors='ignore')
  
       # (.+?) ([^<]+) .+?
@@ -341,7 +341,7 @@ def showEpisodes():
     s = requests.Session() 	
     r = s.post(link,data = postdata)
     sHtmlContent = r.content 
-    if isNetlfix(): 
+    if isNetflix(): 
        sHtmlContent = sHtmlContent.decode('utf8',errors='ignore') 
        VSlog(sHtmlContent)
     if sHtmlContent:
