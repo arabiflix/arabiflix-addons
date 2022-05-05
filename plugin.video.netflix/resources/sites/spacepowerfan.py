@@ -1,5 +1,6 @@
-﻿#-*- coding: utf-8 -*-
-#arabiflix https://github.com/arabiflix/arabiflix-addons/
+﻿# -*- coding: utf-8 -*-
+# arabiflix https://github.com/arabiflix/arabiflix-addons/
+
 import re
 	
 from resources.lib.gui.hoster import cHosterGui
@@ -7,19 +8,19 @@ from resources.lib.gui.gui import cGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
-from resources.lib.comaddon import progress, VSlog, isNetflix
+from resources.lib.comaddon import progress, VSlog, isNetflix, siteManager
 from resources.lib.parser import cParser
  
 SITE_IDENTIFIER = 'spacepowerfan'
 SITE_NAME = 'spacepowerfan'
 SITE_DESC = 'arabic vod'
  
-URL_MAIN = 'https://www.spacepowerfan.com/'
+URL_MAIN = siteManager().getUrlMain(SITE_IDENTIFIER)
 
-ANIM_MOVIES = ('https://spacepowerfan.com/%d8%a3%d9%81%d9%84%d8%a7%d9%85/', 'showMovies')
-ANIM_NEWS = ('https://spacepowerfan.com/%d9%85%d8%b3%d9%84%d8%b3%d9%84%d8%a7%d8%aa/', 'showSeries')
+ANIM_MOVIES = (URL_MAIN + '/%d8%a3%d9%81%d9%84%d8%a7%d9%85/', 'showMovies')
+ANIM_NEWS = (URL_MAIN + '/%d9%85%d8%b3%d9%84%d8%b3%d9%84%d8%a7%d8%aa/', 'showSeries')
 
-URL_SEARCH = ('https://spacepowerfan.com/?s=', 'showSeries')
+URL_SEARCH = (URL_MAIN + '/?s=', 'showSeries')
 FUNCTION_SEARCH = 'showSeries'
  
 def load():
@@ -29,11 +30,9 @@ def load():
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
     oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche', 'search.png', oOutputParameterHandler)
 
-    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', ANIM_NEWS[0])
     oGui.addDir(SITE_IDENTIFIER, 'showSeries', 'مسلسلات إنمي', 'anime.png', oOutputParameterHandler)
     
-    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', ANIM_MOVIES[0])
     oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'أفلام إنمي', 'anime.png', oOutputParameterHandler)  
  
@@ -43,14 +42,13 @@ def showSearch():
     oGui = cGui()
  
     sSearchText = oGui.showKeyBoard()
-    if (sSearchText != False):
-        sUrl = 'https://spacepowerfan.com/?s='+sSearchText
+    if sSearchText is not False:
+        sUrl = URL_MAIN + '/?s='+sSearchText
         showSeries(sUrl)
         oGui.setEndOfDirectory()
         return
    
 def showMovies(sSearch = ''):
-    import requests
     oGui = cGui()
     if sSearch:
       sUrl = sSearch
@@ -65,7 +63,7 @@ def showMovies(sSearch = ''):
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 	
-    if (aResult[0] == True):
+    if aResult[0] is True:
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
         oOutputParameterHandler = cOutputParameterHandler()   
@@ -74,23 +72,23 @@ def showMovies(sSearch = ''):
             if progress_.iscanceled():
                 break
  
-            sTitle = aEntry[2].replace("مشاهدة","").replace("مسلسل","").replace("انمي","").replace("مترجمة","").replace("مترجم","").replace("فيلم","").replace("مدبلج بالعربية","مدبلج").replace("مدبلج للعربية","مدبلج").replace("مدبلج بالعربي","مدبلج")
+            sTitle = aEntry[2].replace("مشاهدة","").replace("مسلسل","").replace("انمي","").replace("مترجمة","").replace("مترجم","").replace("فيلم","")
             siteUrl = aEntry[0]
             sThumb = aEntry[1].replace('"',"").replace("&quot;","").replace("amp;","")
             sDesc = aEntry[4]
             sYear = aEntry[3]
-            sDub = ''
-            sDisplayTitle = ('%s [%s]') % (sTitle, sDub)
             oOutputParameterHandler.addParameter('siteUrl',siteUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
+            oOutputParameterHandler.addParameter('sYear', sYear)
+            oOutputParameterHandler.addParameter('sDesc', sDesc)
 			
-            oGui.addMovie(SITE_IDENTIFIER, 'showServers', sDisplayTitle, '', sThumb, sDesc, oOutputParameterHandler)
+            oGui.addMovie(SITE_IDENTIFIER, 'showServers', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
         progress_.VSclose(progress_)
  
         sNextPage = __checkForNextPage(sHtmlContent)
-        if (sNextPage != False):
+        if sNextPage != False:
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
             oGui.addDir(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Next >>>[/COLOR]', 'next.png', oOutputParameterHandler)
@@ -113,11 +111,11 @@ def showSeries(sSearch = ''):
     sStart = '<div class="Top">'
     sEnd = '<div class="WebDescription">'
     sHtmlContent = oParser.abParse(sHtmlContent, sStart, sEnd)
-    sPattern = 'class="TPost C"> <a href="(.+?)">.+?data-lazy-src="(.+?)".+?class="Title">(.+?)</'
+    sPattern = 'class="TPost C"> <a href="([^<]+)">.+?data-lazy-src="(.+?)".+?class="Title">(.+?)</'
 
     aResult = oParser.parse(sHtmlContent, sPattern)
 	
-    if (aResult[0] == True):
+    if aResult[0] is True:
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
         oOutputParameterHandler = cOutputParameterHandler()
@@ -126,7 +124,7 @@ def showSeries(sSearch = ''):
             if progress_.iscanceled():
                 break
  
-            sTitle = aEntry[2].replace("مشاهدة","").replace("مسلسل","").replace("أنمي","").replace("انمي","").replace("مترجمة","").replace("مترجم","").replace("فيلم","").replace("مدبلج بالعربية","").replace("مدبلج للعربية","").replace("مدبلج بالعربي","").replace("مدبلج","")
+            sTitle = aEntry[2].replace("مشاهدة","").replace("مسلسل","").replace("أنمي","").replace("انمي","").replace("مترجمة","").replace("مترجم","").replace("فيلم","")
             siteUrl = aEntry[0]
             sThumb = aEntry[1]
             sDesc = ''
@@ -136,7 +134,8 @@ def showSeries(sSearch = ''):
             oOutputParameterHandler.addParameter('siteUrl',siteUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
             oOutputParameterHandler.addParameter('sThumb', sThumb)
-            oOutputParameterHandler.addParameter('sYear', sYear) 
+            oOutputParameterHandler.addParameter('sYear', sYear)
+            oOutputParameterHandler.addParameter('sDesc', sDesc)
 			
             oGui.addTV(SITE_IDENTIFIER, 'showEpisodes', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
@@ -144,7 +143,7 @@ def showSeries(sSearch = ''):
         progress_.VSclose(progress_)
  
         sNextPage = __checkForNextPage(sHtmlContent)
-        if (sNextPage != False):
+        if sNextPage != False:
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
             oGui.addDir(SITE_IDENTIFIER, 'showSeries', '[COLOR teal]Next >>>[/COLOR]', 'next.png', oOutputParameterHandler)
@@ -161,9 +160,7 @@ def showEpisodes():
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
     sThumb = oInputParameterHandler.getValue('sThumb')
 
-    HEADERS = {'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:52.0) Gecko/20100101 Firefox/52.0',
-                   'referer': 'https://spacepowerfan.com/%d9%85%d8%b3%d9%84%d8%b3%d9%84%d8%a7%d8%aa/',
-                   'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'}
+    HEADERS = {'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:52.0) Gecko/20100101 Firefox/52.0'}
     St=requests.Session()
     
     if not isNetflix(): 
@@ -173,36 +170,29 @@ def showEpisodes():
        sHtmlContent = St.get(sUrl).content.decode('utf-8')
     
 
-    oParser = cParser()
      # (.+?) ([^<]+) .+?
     sPattern = 'data-tab="(.+?)">(.+?)</table>'
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 	
-    if (aResult[0] == True):
+    if aResult[0] is True:
         for aEntry in aResult[1]:
             sSeason = "S"+aEntry[0]
             if sSeason:
                sHtmlContent1 = aEntry[1]
-               sPattern = '<img src="(http[^<]+)" alt.+?href="(.+?)">(.+?)</a>'
-               oParser = cParser()
+               sPattern = '<img src="(http[^<]+)" alt.+?href="([^<]+)">(.+?)</a>'
                aResult = oParser.parse(sHtmlContent1, sPattern)
 	
-               if (aResult[0] == True):
+               if aResult[0] is True:
                    oOutputParameterHandler = cOutputParameterHandler()   
                    for aEntry in aResult[1]:
  
                        sTitle = aEntry[2].replace("الحلقة "," E").replace("حلقة "," E")
-                       sTitle = sSeason+sTitle.replace("والأخيرة","").replace("والاخيرة","").replace("الأخيرة","").replace("الاخيرة","")
-                       sTitle = sMovieTitle+sTitle
+                       sTitle = sTitle.replace("والأخيرة","").replace("والاخيرة","").replace("الأخيرة","").replace("الاخيرة","")
+                       sTitle = sMovieTitle+' '+sSeason+sTitle
                        siteUrl = aEntry[1]
                        sThumb = aEntry[0]
-                       VSlog(sThumb)
                        sDesc = ""
-                       if ':' in aEntry[2]:
-                           sDesc = aEntry[2].split(':')[1]
-                           sTitle = sTitle.split(':')[0]
-                           sTitle = sMovieTitle+sTitle
 			
 
 
@@ -223,15 +213,13 @@ def __checkForNextPage(sHtmlContent):
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
  
-    if (aResult[0] == True):
-        #print aResult[1][0]
+    if aResult[0] is True:
         return aResult[1][0]
 
     return False
 	 
 def showServers():
     oGui = cGui()
-    import requests
    
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
@@ -251,14 +239,14 @@ def showServers():
     
     if (aResult[0]):
         for aEntry in aResult[1]:
+            import requests
             sId = aEntry.replace('"',"").replace("&quot;","").replace("amp;","")
             sgn = requests.Session()
             data = sgn.get(sId).content
             sHtmlContent2 = data    
-            sPattern = 'src="(.+?)" frameborder'
-            oParser = cParser()
+            sPattern = 'src="([^<]+)" frameborder'
             aResult = oParser.parse(sHtmlContent2, sPattern)
-            if (aResult[0] == True):
+            if aResult[0] is True:
                 for aEntry in aResult[1]:
                     url = aEntry
                     sTitle = sMovieTitle
@@ -267,7 +255,7 @@ def showServers():
                        
                     sHosterUrl = url 
                     oHoster = cHosterGui().checkHoster(sHosterUrl)
-                    if (oHoster != False):
+                    if oHoster != False:
                        oHoster.setDisplayName(sMovieTitle)
                        oHoster.setFileName(sMovieTitle)
                        cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)

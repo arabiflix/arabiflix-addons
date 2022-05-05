@@ -1,65 +1,46 @@
-﻿#-*- coding: utf-8 -*-
-#arabiflix.(@geekarabiflix)
+﻿# -*- coding: utf-8 -*-
+# arabiflix https://github.com/arabiflix/arabiflix-addons/
+
+import re
+	
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.gui.gui import cGui
-from resources.lib.gui.guiElement import cGuiElement
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
-from resources.lib.comaddon import progress, VSlog
+from resources.lib.comaddon import progress, VSlog, siteManager
 from resources.lib.parser import cParser
-import re
  
 SITE_IDENTIFIER = 'aljazeera'
 SITE_NAME = 'aljazeera'
 SITE_DESC = 'arabic vod'
  
-URL_MAIN = 'https://www.aljazeera.net'
+URL_MAIN = siteManager().getUrlMain(SITE_IDENTIFIER)
 
 DOC_NEWS = ('https://www.aljazeera.net/programs/investigative', 'showMovies')
 DOC_SERIES = ('https://www.aljazeera.net/programs/documentaries', 'showMovies')
 REPLAYTV_NEWS = ('https://www.aljazeera.net/programs/newsmagazineshows', 'showMovies')
 
-FUNCTION_SEARCH = 'showMovies'
  
 def load():
     oGui = cGui()
-
-    oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
-    oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Search', 'search.png', oOutputParameterHandler)
     
     oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', DOC_NEWS[0])
     oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'أفلام وثائقية', 'doc.png', oOutputParameterHandler)
 	
-    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', DOC_SERIES[0])
     oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'مسلسلات وثائقية', 'doc.png', oOutputParameterHandler)
     
-    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', REPLAYTV_NEWS[0])
     oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'برامج تلفزيونية', 'brmg.png', oOutputParameterHandler)
 
     oGui.setEndOfDirectory()
-	
-def showSearch():
-    oGui = cGui()
- 
-    sSearchText = oGui.showKeyBoard()
-    if (sSearchText != False):
-        sUrl = ''+sSearchText
-        showMovies(sUrl)
-        oGui.setEndOfDirectory()
-        return
 
 def showMovies(sSearch = ''):
     oGui = cGui()
-    if sSearch:
-      sUrl = sSearch
-    else:
-        oInputParameterHandler = cInputParameterHandler()
-        sUrl = oInputParameterHandler.getValue('siteUrl')
+    oInputParameterHandler = cInputParameterHandler()
+    sUrl = oInputParameterHandler.getValue('siteUrl')
  
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
@@ -70,7 +51,7 @@ def showMovies(sSearch = ''):
     aResult = oParser.parse(sHtmlContent, sPattern)
 	
 	
-    if (aResult[0] == True):
+    if aResult[0] is True:
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
         oOutputParameterHandler = cOutputParameterHandler() 
@@ -82,28 +63,25 @@ def showMovies(sSearch = ''):
 
             sTitle = aEntry[2]
             
-            sThumbnail = URL_MAIN+aEntry[0]
+            sThumb = URL_MAIN+aEntry[0]
             siteUrl = URL_MAIN+aEntry[1]
-            sInfo = aEntry[3]
+            sDesc = aEntry[3]
 
 			
             oOutputParameterHandler.addParameter('siteUrl',siteUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
-            oOutputParameterHandler.addParameter('sThumbnail', sThumbnail)
-            oGui.addMisc(SITE_IDENTIFIER, 'showMoviesLinks', sTitle, '', sThumbnail, sInfo, oOutputParameterHandler) 
+            oOutputParameterHandler.addParameter('sThumb', sThumb)
+            oGui.addMisc(SITE_IDENTIFIER, 'showMoviesLinks', sTitle, '', sThumb, sDesc, oOutputParameterHandler) 
 
         
         progress_.VSclose(progress_)
  
-    if not sSearch:
-        oGui.setEndOfDirectory()     
+    oGui.setEndOfDirectory() 
+    
 def showMoviesLinks(sSearch = ''):
     oGui = cGui()
-    if sSearch:
-      sUrl = sSearch
-    else:
-        oInputParameterHandler = cInputParameterHandler()
-        sUrl = oInputParameterHandler.getValue('siteUrl')
+    oInputParameterHandler = cInputParameterHandler()
+    sUrl = oInputParameterHandler.getValue('siteUrl')
  
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
@@ -115,7 +93,7 @@ def showMoviesLinks(sSearch = ''):
     aResult = oParser.parse(sHtmlContent, sPattern)
 	
 	
-    if (aResult[0] == True):
+    if aResult[0] is True:
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
         oOutputParameterHandler = cOutputParameterHandler()
@@ -126,37 +104,36 @@ def showMoviesLinks(sSearch = ''):
  
             sTitle = aEntry[2]
             
-            sThumbnail = URL_MAIN+aEntry[0]
+            sThumb = URL_MAIN+aEntry[0]
             siteUrl = URL_MAIN+aEntry[1]
-            sInfo = aEntry[3]
+            sDesc = aEntry[3]
 			
 			
             oOutputParameterHandler.addParameter('siteUrl',siteUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
-            oOutputParameterHandler.addParameter('sThumbnail', sThumbnail)
+            oOutputParameterHandler.addParameter('sThumb', sThumb)
 
-            oGui.addMisc(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumbnail, sInfo, oOutputParameterHandler)
+            oGui.addMisc(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
         
         progress_.VSclose(progress_)
  
         sNextPage = __checkForNextPage(sHtmlContent)
-        if (sNextPage != False):
+        if sNextPage != False:
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
             oGui.addDir(SITE_IDENTIFIER, 'showMoviesLinks', '[COLOR teal]Next >>>[/COLOR]', 'next.png', oOutputParameterHandler)
  
-    if not sSearch:
-        oGui.setEndOfDirectory()
+    oGui.setEndOfDirectory()
  
 def __checkForNextPage(sHtmlContent):
-    sPattern = ' <li >.+?<a href="(.+?)">'
+    sPattern = '<li >.+?<a href="(.+?)">'
 	 # .+? ([^<]+) (.+?)
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
  
-    if (aResult[0] == True):
-        #print aResult[1][0]
-        return URL_MAIN+aResult[1][0]
+    if aResult[0] is True:
+        
+        return URL_MAIN+'/'+aResult[1][0]
 
 
     return False
@@ -166,16 +143,15 @@ def showHosters():
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
-    sThumbnail = oInputParameterHandler.getValue('sThumbnail')
+    sThumb = oInputParameterHandler.getValue('sThumb')
     
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request();
     oParser = cParser()
       # (.+?) ([^<]+) .+?
-    #recup du lien mp4
     sPattern =  '"embedUrl": "(.+?)"' 
     aResult = oParser.parse(sHtmlContent,sPattern)
-    if (aResult[0] == True):
+    if aResult[0] is True:
        for aEntry in aResult[1]:
             url = aEntry
             if url.startswith('//'):
@@ -183,10 +159,10 @@ def showHosters():
             sHosterUrl = url
 			
             oHoster = cHosterGui().checkHoster(sHosterUrl)
-            if (oHoster != False):
+            if oHoster != False:
                 oHoster.setDisplayName(sMovieTitle)
                 oHoster.setFileName(sMovieTitle)
-                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail)
+                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
 
 
                 

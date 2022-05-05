@@ -1,27 +1,28 @@
-﻿#-*- coding: utf-8 -*-
-#arabiflix
+﻿# -*- coding: utf-8 -*-
+# arabiflix https://github.com/arabiflix/arabiflix-addons/
+
+import re
+	
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.gui.gui import cGui
-from resources.lib.gui.guiElement import cGuiElement
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
-from resources.lib.comaddon import progress
+from resources.lib.comaddon import progress, siteManager
 from resources.lib.parser import cParser
-import re
  
 SITE_IDENTIFIER = 'nightosphere'
 SITE_NAME = 'nightosphere'
 SITE_DESC = 'arabic vod'
  
-URL_MAIN = 'https://nightosphere.net'
+URL_MAIN = siteManager().getUrlMain(SITE_IDENTIFIER)
 
 
 KID_CARTOON = ('https://nightosphere.net/all-shows/', 'showSeries')
 
-URL_SEARCH = ('https://www.stardima.com/watch/search.php?keywords=', 'showSeriesSearch')
+URL_SEARCH = ('https://nightosphere.net/?s=', 'showSeriesSearch')
 
-URL_SEARCH_SERIES = ('https://www.stardima.com/watch/search.php?keywords=', 'showSeriesSearch')
+URL_SEARCH_SERIES = ('https://nightosphere.net/?s=', 'showSeries')
 FUNCTION_SEARCH = 'showSeries'
  
 def load():
@@ -41,9 +42,9 @@ def showSearch():
     oGui = cGui()
  
     sSearchText = oGui.showKeyBoard()
-    if (sSearchText != False):
-        sUrl = 'https://www.stardima.com/watch/search.php?keywords='+sSearchText
-        showSeriesSearch(sUrl)
+    if sSearchText is not False:
+        sUrl = 'https://nightosphere.net/?s='+sSearchText
+        showSeries(sUrl)
         oGui.setEndOfDirectory()
         return 
   
@@ -51,20 +52,20 @@ def showSeries(sSearch = ''):
     oGui = cGui()
     if sSearch:
       sUrl = sSearch
+      sPattern = '<div class="w-post-elm post_image usg_post_image_1 stretched"><a href="(.+?)" aria-label="(.+?)"></a>.+?src="(.+?)" class='
     else:
         oInputParameterHandler = cInputParameterHandler()
         sUrl = oInputParameterHandler.getValue('siteUrl')
+ # ([^<]+) .+? (.+?)
+        sPattern = '<a class="w-grid-item-anchor" href="(.+?)".+?aria-label="(.+?)"></a>.+?src="(.+?)" class='
  
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
- # ([^<]+) .+? (.+?)
-    sPattern = '<a class="w-grid-item-anchor" href="(.+?)".+?aria-label="(.+?)"></a>.+?src="(.+?)" class='
-
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 	
 	
-    if (aResult[0] == True):
+    if aResult[0] is True:
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
         for aEntry in aResult[1]:
@@ -89,7 +90,7 @@ def showSeries(sSearch = ''):
         progress_.VSclose(progress_)
  
         sNextPage = __checkForNextPage(sHtmlContent)
-        if (sNextPage != False):
+        if sNextPage != False:
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
             oGui.addDir(SITE_IDENTIFIER, 'showSeries', '[COLOR teal]Next >>>[/COLOR]', 'next.png', oOutputParameterHandler)
@@ -103,8 +104,8 @@ def __checkForNextPage(sHtmlContent):
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
  
-    if (aResult[0] == True):
-        #print aResult[1][0]
+    if aResult[0] is True:
+        
         return aResult[1][0]
 
     return False
@@ -114,7 +115,7 @@ def showHosters():
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
-    sThumbnail = oInputParameterHandler.getValue('sThumbnail')
+    sThumb = oInputParameterHandler.getValue('sThumb')
     
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request();
@@ -123,7 +124,7 @@ def showHosters():
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 	
-    if (aResult[0] == True):
+    if aResult[0] is True:
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
         for aEntry in aResult[1]:
@@ -138,10 +139,10 @@ def showHosters():
             
             sHosterUrl = url
             oHoster = cHosterGui().checkHoster(sHosterUrl)
-            if (oHoster != False):
+            if oHoster != False:
                 oHoster.setDisplayName(sTitle)
                 oHoster.setFileName(sTitle)
-                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail)
+                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
 				
 
         progress_.VSclose(progress_) 

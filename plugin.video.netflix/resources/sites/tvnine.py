@@ -1,19 +1,21 @@
-﻿#-*- coding: utf-8 -*-
-#arabiflix https://github.com/arabiflix/arabiflix-addons/
+﻿# -*- coding: utf-8 -*-
+# arabiflix https://github.com/arabiflix/arabiflix-addons/
+
+import re
+	
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.gui.gui import cGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
-from resources.lib.comaddon import progress
+from resources.lib.comaddon import progress, VSlog, siteManager
 from resources.lib.parser import cParser
-import re
  
 SITE_IDENTIFIER = 'tvnine'
 SITE_NAME = 'tv96'
 SITE_DESC = 'arabic vod'
  
-URL_MAIN = 'https://www.tv96.tv'
+URL_MAIN = siteManager().getUrlMain(SITE_IDENTIFIER)
 
 SPORT_LIVE = ('https://www.tv96.tv', 'showMovies')
 
@@ -50,7 +52,7 @@ def showMovies(sSearch = ''):
     aResult = oParser.parse(sHtmlContent, sPattern)
 	
 	
-    if (aResult[0] == True):
+    if aResult[0] is True:
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
         oOutputParameterHandler = cOutputParameterHandler()
@@ -60,16 +62,19 @@ def showMovies(sSearch = ''):
                 break
  
             sTitle =  aEntry[1]+' vs '+aEntry[3]
-            sThumbnail = ""
+            sYear = ""
+            sThumb = ""
             siteUrl = aEntry[0]
-            sInfo = aEntry[2]+' GMT+1'
+            sDesc = aEntry[2]+' GMT+1'
 			
 			
             oOutputParameterHandler.addParameter('siteUrl',siteUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
-            oOutputParameterHandler.addParameter('sThumbnail', sThumbnail)
+            oOutputParameterHandler.addParameter('sThumb', sThumb)
+            oOutputParameterHandler.addParameter('sYear', sYear)
+            oOutputParameterHandler.addParameter('sDesc', sDesc)
 
-            oGui.addMisc(SITE_IDENTIFIER, 'showLive', sTitle, '', sThumbnail, sInfo, oOutputParameterHandler)
+            oGui.addMisc(SITE_IDENTIFIER, 'showLive', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
         
         progress_.VSclose(progress_)
  
@@ -82,7 +87,7 @@ def showLive():
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
-    sThumbnail = oInputParameterHandler.getValue('sThumbnail')
+    sThumb = oInputParameterHandler.getValue('sThumb')
  
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request()
@@ -90,117 +95,160 @@ def showLive():
 
     # (.+?) # ([^<]+) .+? 
     sPattern = 'data-embed="(.+?)">(.+?)</li>'
-    
-    oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 
     #print aResult
    
-    if (aResult[0] == True):
+    if aResult[0] is True:
         for aEntry in aResult[1]:
- 
             sTitle = aEntry[1]
             siteUrl = aEntry[0]
-            sInfo = ''
             oRequestHandler = cRequestHandler(siteUrl)
             data = oRequestHandler.request()
             oParser = cParser()
     # (.+?) # ([^<]+) .+? 
             sPattern = 'source: "(.+?)",'
             aResult = oParser.parse(data, sPattern)
-            if (aResult[0] == True):
+            if aResult[0] is True:
+               for aEntry in aResult[1]:
+                   url = aEntry
+                   if url.startswith('//'):
+                      url = 'https:' + url 
+                   if '?src=' in url:
+                      url = url.split('?src=')[1]
+                   sHosterUrl = sHosterUrl+ '|User-Agent=Android'+ '&Referer='+sHosterUrl
+                   sMovieTitle = sTitle
+            
+
+                   oHoster = cHosterGui().checkHoster(sHosterUrl)
+                   if oHoster != False:
+                       oHoster.setDisplayName(sMovieTitle)
+                       oHoster.setFileName(sMovieTitle)
+                       cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb) 
+    # (.+?) # ([^<]+) .+? 
+            sPattern = "source: '(.+?)',"
+            aResult = oParser.parse(data, sPattern)
+            if aResult[0] is True:
                for aEntry in aResult[1]:
             
                    url = aEntry
                    if url.startswith('//'):
                       url = 'https:' + url 
-                   sHosterUrl = url.replace("https://tv.hd44.net/p/phone.html?src=","") 
-                   sHosterUrl = sHosterUrl+ '|User-Agent=Android'
+                   if '?src=' in url:
+                      url = url.split('?src=')[1] 
+                   sHosterUrl = sHosterUrl+ '|User-Agent=Android'+ '&Referer='+sHosterUrl
                    sMovieTitle = sTitle
             
 
                    oHoster = cHosterGui().checkHoster(sHosterUrl)
-                   if (oHoster != False):
+                   if oHoster != False:
                        oHoster.setDisplayName(sMovieTitle)
                        oHoster.setFileName(sMovieTitle)
-                       cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail) 
+                       cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
     # (.+?) # ([^<]+) .+? 
             sPattern = 'src="(.+?)"'
             aResult = oParser.parse(data, sPattern)
-            if (aResult[0] == True):
+            if aResult[0] is True:
                for aEntry in aResult[1]:
             
                    url = aEntry
                    if url.startswith('//'):
                       url = 'https:' + url
+                   if '?src=' in url:
+                      url = url.split('?src=')[1]
+                   if ".php" in url:
+                       oRequestHandler = cRequestHandler(url)
+                       data = oRequestHandler.request() 
+                       sPattern = "source: '(.+?)',"
+                       aResult = oParser.parse(data, sPattern)
+                       if aResult[0] is True:
+                          for aEntry in aResult[1]:
+            
+                              url = aEntry
+                              if url.startswith('//'):
+                                 url = 'https:' + url
+                              if '?src=' in url:
+                                 url = url.split('?src=')[1] 
+                              sHosterUrl = sHosterUrl+ '|User-Agent=Android'+ '&Referer='+sHosterUrl 
+                              sMovieTitle = sTitle
+            
+
+                              oHoster = cHosterGui().checkHoster(sHosterUrl)
+                              if oHoster != False:
+                                  oHoster.setDisplayName(sMovieTitle)
+                                  oHoster.setFileName(sMovieTitle)
+                                  cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb) 
                    sHosterUrl = url.replace("https://tv.hd44.net/p/phone.html?src=","") 
-                   sHosterUrl = sHosterUrl+ '|User-Agent=Android' 
+                   sHosterUrl = sHosterUrl+ '|User-Agent=Android'+ '&Referer='+sHosterUrl    
                    sMovieTitle = sTitle
             
 
                    oHoster = cHosterGui().checkHoster(sHosterUrl)
-                   if (oHoster != False):
+                   if oHoster != False:
                        oHoster.setDisplayName(sMovieTitle)
                        oHoster.setFileName(sMovieTitle)
-                       cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail)  
+                       cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)  
     # (.+?) # ([^<]+) .+? 
             sPattern = "hls: '(.+?)'"
             aResult = oParser.parse(data, sPattern)
-            if (aResult[0] == True):
+            if aResult[0] is True:
                for aEntry in aResult[1]:
             
                    url = aEntry
                    if url.startswith('//'):
                       url = 'https:' + url
-                   sHosterUrl = url.replace("https://tv.hd44.net/p/phone.html?src=","") 
-                   sHosterUrl = sHosterUrl+ '|User-Agent=Android' 
+                   if '?src=' in url:
+                      url = url.split('?src=')[1] 
+                   sHosterUrl = sHosterUrl+ '|User-Agent=Android'+ '&Referer='+sHosterUrl  
                    sMovieTitle = sTitle
             
 
                    oHoster = cHosterGui().checkHoster(sHosterUrl)
-                   if (oHoster != False):
+                   if oHoster != False:
                        oHoster.setDisplayName(sMovieTitle)
                        oHoster.setFileName(sMovieTitle)
-                       cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail) 
+                       cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb) 
     # (.+?) # ([^<]+) .+? 
             sPattern = 'file: "(.+?)",'
             aResult = oParser.parse(data, sPattern)
-            if (aResult[0] == True):
+            if aResult[0] is True:
                for aEntry in aResult[1]:
             
                    url = aEntry
                    if url.startswith('//'):
                       url = 'https:' + url
-                   sHosterUrl = url.replace("https://tv.hd44.net/p/phone.html?src=","") 
-                   sHosterUrl = sHosterUrl+ '|User-Agent=Android' 
+                   if '?src=' in url:
+                      url = url.split('?src=')[1] 
+                   sHosterUrl = sHosterUrl+ '|User-Agent=Android' + '&Referer='+sHosterUrl
                    sMovieTitle = sTitle
             
 
                    oHoster = cHosterGui().checkHoster(sHosterUrl)
-                   if (oHoster != False):
+                   if oHoster != False:
                        oHoster.setDisplayName(sMovieTitle)
                        oHoster.setFileName(sMovieTitle)
-                       cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail)   
+                       cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)   
     # (.+?) # ([^<]+) .+? 
             sPattern = '<iframe src=".+?stream_url=(.+?)" height'
             aResult = oParser.parse(data, sPattern)
             UA = 'Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/95.0.4638.69 Mobile Safari/537.36'
-            if (aResult[0] == True):
+            if aResult[0] is True:
                for aEntry in aResult[1]:
             
                    url = aEntry
                    if url.startswith('//'):
                       url = 'https:' + url
-                   sHosterUrl = url.replace("https://tv.hd44.net/p/phone.html?src=","") 
-                   sHosterUrl = sHosterUrl+ '|User-Agent=' + UA + '&Referer=https://yastatic.net/' 
+                   if '?src=' in url:
+                      url = url.split('?src=')[1] 
+                   sHosterUrl = sHosterUrl+ '|User-Agent=' + UA + '&Referer='+sHosterUrl
                    sMovieTitle = sTitle
             
 
                    oHoster = cHosterGui().checkHoster(sHosterUrl)
-                   if (oHoster != False):
+                   if oHoster != False:
                        oHoster.setDisplayName(sMovieTitle)
                        oHoster.setFileName(sMovieTitle)
-                       cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail)    
+                       cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb) 
            
 
              

@@ -1,51 +1,39 @@
-﻿#-*- coding: utf-8 -*-
-#arabiflix https://github.com/arabiflix/arabiflix-addons/
+﻿# -*- coding: utf-8 -*-
+# arabiflix https://github.com/arabiflix/arabiflix-addons/
+
+import re
+	
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.gui.gui import cGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
-from resources.lib.comaddon import progress
+from resources.lib.comaddon import progress, siteManager
 from resources.lib.parser import cParser
-import re
  
 SITE_IDENTIFIER = 'hidaya'
 SITE_NAME = 'hidaya'
 SITE_DESC = 'arabic vod'
  
-URL_MAIN = 'https://hidaya.tn'
+URL_MAIN = siteManager().getUrlMain(SITE_IDENTIFIER)
 
 ISLAM_QURAN = ('https://hidaya.tn/tilawet/ajax_tilawet.php?search=&page=1', 'showMovies')
 
-FUNCTION_SEARCH = 'showSeries'
  
 def load():
     oGui = cGui()
 
     oOutputParameterHandler = cOutputParameterHandler()
-    oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
-    oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Recherche', 'search.png', oOutputParameterHandler)
+    oOutputParameterHandler.addParameter('siteUrl', ISLAM_QURAN[0])
+    oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'ISLAM_QURAN', 'search.png', oOutputParameterHandler)
 
             
     oGui.setEndOfDirectory()
- 
-def showSearch():
-    oGui = cGui()
- 
-    sSearchText = oGui.showKeyBoard()
-    if (sSearchText != False):
-        sUrl = ''+sSearchText
-        showMovies(sUrl)
-        oGui.setEndOfDirectory()
-        return
   
 def showMovies(sSearch = ''):
     oGui = cGui()
-    if sSearch:
-      sUrl = sSearch
-    else:
-        oInputParameterHandler = cInputParameterHandler()
-        sUrl = oInputParameterHandler.getValue('siteUrl')
+    oInputParameterHandler = cInputParameterHandler()
+    sUrl = oInputParameterHandler.getValue('siteUrl')
     b = sUrl.split('=')[2]
     b = int(b)
     for b in range(b,b+5):
@@ -59,12 +47,12 @@ def showMovies(sSearch = ''):
         oParser = cParser()
         aResult = oParser.parse(sHtmlContent, sPattern)
 	
-        if (aResult[0] == True):
+        if aResult[0] is True:
            for aEntry in aResult[1]:
         
                url = "https://www.youtube.com/watch?v="+aEntry[1]
                sTitle = aEntry[0]+' [COLOR yellow] '+aEntry[2]+' [/COLOR]'
-               sThumbnail = "http://img.youtube.com/vi/"+aEntry[1]+"/hqdefault.jpg"
+               sThumb = "http://img.youtube.com/vi/"+aEntry[1]+"/hqdefault.jpg"
 				
 				
 
@@ -73,16 +61,16 @@ def showMovies(sSearch = ''):
             
                sHosterUrl = url 
                oHoster = cHosterGui().checkHoster(sHosterUrl)
-               if (oHoster != False):
+               if oHoster != False:
                   sDisplayTitle = sTitle
                   oHoster.setDisplayName(sDisplayTitle)
                   oHoster.setFileName(sTitle)
-                  cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail)
+                  cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
 				
 
  
         sNextPage = __checkForNextPage(sHtmlContent)
-        if (sNextPage != False):
+        if sNextPage != False:
            oOutputParameterHandler = cOutputParameterHandler()
            oOutputParameterHandler.addParameter('siteUrl', sNextPage)
            oGui.addDir(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Next >>>[/COLOR]', 'next.png', oOutputParameterHandler)
@@ -96,7 +84,7 @@ def __checkForNextPage(sHtmlContent):
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
  
-    if (aResult[0] == True):
+    if aResult[0] is True:
         return "https://hidaya.tn/tilawet/ajax_tilawet.php?search=&page=" + aResult[1][0]
 
     return False
@@ -106,7 +94,7 @@ def showHosters():
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
-    sThumbnail = oInputParameterHandler.getValue('sThumbnail')
+    sThumb = oInputParameterHandler.getValue('sThumb')
     
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request();
@@ -114,7 +102,7 @@ def showHosters():
     oParser = cParser()       
     sPattern =  '<a href="([^<]+)".+?class="download-link"' 
     aResult = oParser.parse(sHtmlContent,sPattern)
-    if (aResult[0] == True):
+    if aResult[0] is True:
         m3url =  aResult[1][0]
         oRequest = cRequestHandler(m3url)
         sHtmlContent = oRequest.request()
@@ -126,7 +114,7 @@ def showHosters():
     aResult = oParser.parse(sHtmlContent, sPattern)
 
 	
-    if (aResult[0] == True):
+    if aResult[0] is True:
         for aEntry in aResult[1]:
         
             url = aEntry[0]
@@ -138,11 +126,11 @@ def showHosters():
             
             sHosterUrl = url 
             oHoster = cHosterGui().checkHoster(sHosterUrl)
-            if (oHoster != False):
+            if oHoster != False:
                sDisplayTitle = sMovieTitle+sTitle
                oHoster.setDisplayName(sDisplayTitle)
                oHoster.setFileName(sMovieTitle)
-               cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail)
+               cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
 				
                 
     oGui.setEndOfDirectory()

@@ -1,5 +1,6 @@
-﻿#-*- coding: utf-8 -*-
-#arabiflix https://github.com/arabiflix/arabiflix-addons/
+﻿# -*- coding: utf-8 -*-
+# arabiflix https://github.com/arabiflix/arabiflix-addons/
+
 import re
 	
 from resources.lib.gui.hoster import cHosterGui
@@ -7,16 +8,15 @@ from resources.lib.gui.gui import cGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
-from resources.lib.comaddon import progress, isNetflix
+from resources.lib.comaddon import progress, siteManager
 from resources.lib.parser import cParser
-from resources.lib.util import cUtil
 
 
 SITE_IDENTIFIER = 'rotana'
 SITE_NAME = 'rotana'
 SITE_DESC = 'arabic vod'
  
-URL_MAIN = 'https://rotana.net'
+URL_MAIN = siteManager().getUrlMain(SITE_IDENTIFIER)
 
 MOVIE_AR = ('https://rotana.net/vod-movies', 'showMovies')
 URL_SEARCH = ('https://rotana.net/?s=', 'showSeries')
@@ -30,35 +30,27 @@ def load():
     oOutputParameterHandler.addParameter('siteUrl', 'http://venom/')
     oGui.addDir(SITE_IDENTIFIER, 'showSearch', 'Search', 'search.png', oOutputParameterHandler)
  
-    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', MOVIE_AR[0])
     oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'أفلام عربية', 'film.png', oOutputParameterHandler)
 
-    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', "https://rotana.net/movies-genres/%d8%a3%d9%83%d8%b4%d9%86/")
     oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'أكشن', 'film.png', oOutputParameterHandler)
  
-    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', "https://rotana.net/movies-genres/%d8%af%d8%b1%d8%a7%d9%85%d8%a7/")
     oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'دراما', 'film.png', oOutputParameterHandler)
  
-    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', "https://rotana.net/movies-genres/%d8%b1%d9%88%d9%85%d8%a7%d9%86%d8%b3%d9%8a/")
     oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'رومانسي', 'film.png', oOutputParameterHandler)
  
-    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', "https://rotana.net/movies-genres/%d9%83%d9%88%d9%85%d9%8a%d8%af%d9%8a%d8%a7/")
     oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'كوميديا', 'film.png', oOutputParameterHandler)
     
-    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', "https://rotana.net/vod-short-movies")
     oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'أفلام قصيرة', 'film.png', oOutputParameterHandler)
    
-    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', "https://rotana.net/vod-series-2")
     oGui.addDir(SITE_IDENTIFIER, 'showSerie', 'مسلسلات عربية', 'mslsl.png', oOutputParameterHandler)
  
-    oOutputParameterHandler = cOutputParameterHandler()
     oOutputParameterHandler.addParameter('siteUrl', "https://rotana.net/theatrical-plays")
     oGui.addDir(SITE_IDENTIFIER, 'showMovies', 'مسرحيات', 'msrh.png', oOutputParameterHandler)
  
@@ -68,7 +60,7 @@ def showSearch():
     oGui = cGui()
  
     sSearchText = oGui.showKeyBoard()
-    if (sSearchText != False):
+    if sSearchText is not False:
         sUrl = 'https://rotana.net/?s='+sSearchText
         showMoviesSearch(sUrl)
         oGui.setEndOfDirectory()
@@ -91,7 +83,7 @@ def showMoviesSearch(sSearch = ''):
     aResult = oParser.parse(sHtmlContent, sPattern)
 	
 	
-    if (aResult[0] == True):
+    if aResult[0] is True:
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
         oOutputParameterHandler = cOutputParameterHandler()
@@ -105,16 +97,17 @@ def showMoviesSearch(sSearch = ''):
  
             sTitle = aEntry[2]
             siteUrl = aEntry[1]
-            sThumbnail = aEntry[0]
-            sInfo = aEntry[3]
-            sYear = ""
+            sThumb = aEntry[0]
+            sDesc = aEntry[3]
+            sYear = ''
 
             oOutputParameterHandler.addParameter('siteUrl',siteUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
+            oOutputParameterHandler.addParameter('sThumb', sThumb)
             oOutputParameterHandler.addParameter('sYear', sYear)
-            oOutputParameterHandler.addParameter('sThumbnail', sThumbnail)
+            oOutputParameterHandler.addParameter('sDesc', sDesc)
 			
-            oGui.addTV(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumbnail, sInfo, oOutputParameterHandler)
+            oGui.addTV(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
         progress_.VSclose(progress_)
  
@@ -133,13 +126,14 @@ def showMovies(sSearch = ''):
     sHtmlContent = oRequestHandler.request()
  # .+? ([^<]+)
 
-    sPattern = '<a href=([^<]+)>.+?title="([^<]+)" data-lazy-src="([^<]+)"><noscript>'
+    sPattern = '<a href=(.+?)>.+?class="main_eps_img" src="([^<]+)" alt="([^<]+)" title='
+
 
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 	
 	
-    if (aResult[0] == True):
+    if aResult[0] is True:
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
         oOutputParameterHandler = cOutputParameterHandler()
@@ -148,23 +142,24 @@ def showMovies(sSearch = ''):
             if progress_.iscanceled():
                 break
  
-            sTitle = aEntry[1]
+            sTitle = aEntry[2]
             siteUrl = aEntry[0].replace("'","")
-            sThumbnail = aEntry[2]
-            sInfo = ""
-            sYear = ""
+            sThumb = aEntry[1]
+            sDesc = ''
+            sYear = ''
 
             oOutputParameterHandler.addParameter('siteUrl',siteUrl)
             oOutputParameterHandler.addParameter('sMovieTitle', sTitle)
+            oOutputParameterHandler.addParameter('sThumb', sThumb)
             oOutputParameterHandler.addParameter('sYear', sYear)
-            oOutputParameterHandler.addParameter('sThumbnail', sThumbnail)
+            oOutputParameterHandler.addParameter('sDesc', sDesc)
 			
-            oGui.addTV(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumbnail, sInfo, oOutputParameterHandler)
+            oGui.addTV(SITE_IDENTIFIER, 'showHosters', sTitle, '', sThumb, sDesc, oOutputParameterHandler)
 
         progress_.VSclose(progress_)
  
         sNextPage = __checkForNextPage(sHtmlContent)
-        if (sNextPage != False):
+        if sNextPage != False:
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
             oGui.addDir(SITE_IDENTIFIER, 'showSeries', '[COLOR teal]Next >>>[/COLOR]', 'next.png', oOutputParameterHandler)
@@ -179,8 +174,8 @@ def __checkForNextPage(sHtmlContent):
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
  
-    if (aResult[0] == True):
-        #print aResult[1][0]
+    if aResult[0] is True:
+        
         return aResult[1][0]
 
     return False
@@ -190,7 +185,7 @@ def showHosters():
     oInputParameterHandler = cInputParameterHandler()
     sUrl = oInputParameterHandler.getValue('siteUrl')
     sMovieTitle = oInputParameterHandler.getValue('sMovieTitle')
-    sThumbnail = oInputParameterHandler.getValue('sThumbnail')
+    sThumb = oInputParameterHandler.getValue('sThumb')
     
     oRequestHandler = cRequestHandler(sUrl)
     sHtmlContent = oRequestHandler.request();
@@ -200,7 +195,7 @@ def showHosters():
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
 	
-    if (aResult[0] == True):
+    if aResult[0] is True:
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
         for aEntry in aResult[1]:
@@ -216,10 +211,10 @@ def showHosters():
             
             sHosterUrl = url
             oHoster = cHosterGui().checkHoster(sHosterUrl)
-            if (oHoster != False):
+            if oHoster != False:
                 oHoster.setDisplayName(sTitle)
                 oHoster.setFileName(sTitle)
-                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumbnail)
+                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
 				
 
         progress_.VSclose(progress_) 

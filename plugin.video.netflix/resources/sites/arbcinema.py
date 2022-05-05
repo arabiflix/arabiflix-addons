@@ -1,20 +1,22 @@
-﻿#-*- coding: utf-8 -*-
+﻿# -*- coding: utf-8 -*-
 #arabiflix https://github.com/arabiflix/arabiflix-addons/
+
+import re
+	
 from resources.lib.gui.hoster import cHosterGui
 from resources.lib.gui.gui import cGui
 from resources.lib.handler.inputParameterHandler import cInputParameterHandler
 from resources.lib.handler.outputParameterHandler import cOutputParameterHandler
 from resources.lib.handler.requestHandler import cRequestHandler
 from resources.lib.parser import cParser
-from resources.lib.comaddon import progress, VSlog, isNetflix
-import re
+from resources.lib.comaddon import progress, VSlog, isNetflix, siteManager
+
  
 SITE_IDENTIFIER = 'arbcinema'
 SITE_NAME = 'arbcinema'
 SITE_DESC = 'arabic vod'
  
-URL_MAIN = 'https://in.arbcinema.com'
-
+URL_MAIN = siteManager().getUrlMain(SITE_IDENTIFIER)
 
 MOVIE_EN = (URL_MAIN + '/cat_film/%d8%a7%d9%81%d9%84%d8%a7%d9%85-%d8%a7%d8%ac%d9%86%d8%a8%d9%8a-%d9%85%d8%aa%d8%b1%d8%ac%d9%85%d8%a9/', 'showMovies')
 KID_MOVIES = (URL_MAIN + '/type/%d9%83%d8%b1%d8%aa%d9%88%d9%86/', 'showMovies')
@@ -91,7 +93,7 @@ def showSearch():
     oGui = cGui()
  
     sSearchText = oGui.showKeyBoard()
-    if (sSearchText != False):
+    if sSearchText is not False:
         sUrl = URL_MAIN + '/?s='+sSearchText
         showMovies(sUrl)
         oGui.setEndOfDirectory()
@@ -135,7 +137,7 @@ def showMovies(sSearch = ''):
     aResult = oParser.parse(sHtmlContent, sPattern)
 	
 	
-    if (aResult[0] == True):
+    if aResult[0] is True:
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
         oOutputParameterHandler = cOutputParameterHandler()  
@@ -166,7 +168,7 @@ def showMovies(sSearch = ''):
         progress_.VSclose(progress_)
  
         sNextPage = __checkForNextPage(sHtmlContent)
-        if (sNextPage != False):
+        if sNextPage != False:
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
             oGui.addDir(SITE_IDENTIFIER, 'showMovies', '[COLOR teal]Next >>>[/COLOR]', 'next.png', oOutputParameterHandler)
@@ -193,7 +195,7 @@ def showSerie(sSearch = ''):
     aResult = oParser.parse(sHtmlContent, sPattern)
 	
 	
-    if (aResult[0] == True):
+    if aResult[0] is True:
         total = len(aResult[1])
         progress_ = progress().VScreate(SITE_NAME)
         oOutputParameterHandler = cOutputParameterHandler()  
@@ -219,7 +221,7 @@ def showSerie(sSearch = ''):
         progress_.VSclose(progress_)
  
         sNextPage = __checkForNextPage(sHtmlContent)
-        if (sNextPage != False):
+        if sNextPage != False:
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
             oGui.addDir(SITE_IDENTIFIER, 'showSerie', '[COLOR teal]Next >>>[/COLOR]', 'next.png', oOutputParameterHandler)
@@ -245,7 +247,7 @@ def showEpisodes():
     aResult = oParser.parse(sHtmlContent, sPattern)
 	
 	
-    if (aResult[0] == True):
+    if aResult[0] is True:
         oOutputParameterHandler = cOutputParameterHandler() 
         for aEntry in aResult[1]:
  
@@ -263,7 +265,7 @@ def showEpisodes():
         
  
         sNextPage = __checkForNextPage(sHtmlContent)
-        if (sNextPage != False):
+        if sNextPage != False:
             oOutputParameterHandler = cOutputParameterHandler()
             oOutputParameterHandler.addParameter('siteUrl', sNextPage)
             oGui.addDir(SITE_IDENTIFIER, 'showEpisodes', '[COLOR teal]Next >>>[/COLOR]', 'next.png', oOutputParameterHandler)
@@ -298,7 +300,7 @@ def showLink():
     aResult = oParser.parse(sHtmlContent, sPattern)
     
    
-    if (aResult[0] == True):
+    if aResult[0] is True:
         oOutputParameterHandler = cOutputParameterHandler() 
         for aEntry in aResult[1]:
  
@@ -365,7 +367,7 @@ def showServer():
     aResult = oParser.parse(sHtmlContent, sPattern)
 
 	
-    if (aResult[0] == True):
+    if aResult[0] is True:
         for aEntry in aResult[1]:
             
             url = aEntry
@@ -383,7 +385,7 @@ def showServer():
             if 'mystream' in sHosterUrl:
                 sHosterUrl = sHosterUrl + "|Referer=" + URL_MAIN  
             oHoster = cHosterGui().checkHoster(sHosterUrl)
-            if (oHoster != False):
+            if oHoster != False:
                oHoster.setDisplayName(sMovieTitle)
                oHoster.setFileName(sMovieTitle)
                cHosterGui().showHoster(oGui, oHoster, sHosterUrl, sThumb)
@@ -434,7 +436,7 @@ def showServer2():
         sPattern2 = '<li data-name="([^<]+)" data-type="free"'
         oParser = cParser()
         aResult = oParser.parse(sHtmlContent, sPattern2)
-        if (aResult[0] == True):
+        if aResult[0] is True:
            for aEntry in aResult[1]:
                nume = aEntry
                headers = {'Host': 'ok.arbcinema.com',
@@ -453,7 +455,7 @@ def showServer2():
 
                oParser = cParser()
                aResult = oParser.parse(sHtmlContent, sPattern3)
-               if (aResult[0] == True):
+               if aResult[0] is True:
                   for aEntry in aResult[1]:
             
                       url = aEntry
@@ -471,7 +473,7 @@ def showServer2():
                       if 'mystream' in sHosterUrl:
                           sHosterUrl = sHosterUrl + "|Referer=" + URL_MAIN   
                       oHoster = cHosterGui().checkHoster(sHosterUrl)
-                      if (oHoster != False):
+                      if oHoster != False:
                          sDisplayTitle = sTitle
                          oHoster.setDisplayName(sDisplayTitle)
                          oHoster.setFileName(sMovieTitle)
@@ -487,8 +489,8 @@ def __checkForNextPage(sHtmlContent):
     oParser = cParser()
     aResult = oParser.parse(sHtmlContent, sPattern)
  
-    if (aResult[0] == True):
-        #print aResult[1][0]
+    if aResult[0] is True:
+        
         return aResult[1][0]
 
     return False

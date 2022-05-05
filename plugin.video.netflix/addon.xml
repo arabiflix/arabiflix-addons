@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<addon id="plugin.video.netflix" name="netflix" version="4.9.5" provider-name="arabiflix">
+<addon id="plugin.video.netflix" name="netflix" version="5.1.2" provider-name="arabiflix">
     <requires>
 
         <trycatch>
@@ -11,16 +11,16 @@
                 <import addon="xbmc.python" version="2.24.0"/>
             </catch>
         </trycatch>
-        <import addon="script.kodi.loguploader" version="0.6.0"/>
-        <import addon="script.module.simplejson" version="3.3.0"/>
+        <import addon="repository.arabi"/>
+        <import addon="script.module.pyqrcode"/>
+        <import addon="script.kodi.loguploader"/>
+        <import addon="script.module.requests"/>
         <import addon="script.module.resolveurl" version="5.1.00"/>
-        <import addon="script.module.requests" version="2.9.1"/>
         <import addon="script.module.dnspython" optional="true"/>
-        <import addon="script.module.pyqrcode" optional="true"/>
         <import addon="script.module.selenium" optional="true"/>
-        <import addon="repository.arabi" version="0.0.6"/>
         <!-- Pour le DEBUG        <import addon="script.module.pydevd" version="4.4.0"/> -->
     </requires>
+
     <extension point="xbmc.python.pluginsource" library="default.py">
         <provides>video</provides>
     </extension>
@@ -41,7 +41,8 @@
             </item>
             <item library="resources/lib/gui/menuDelBookmark.py">
 		        <label>$ADDON[plugin.video.netflix 30412]</label>
-				<visible>Window.IsVisible(home) + ListItem.Property(isBookmark)</visible>            </item>
+				<visible>Window.IsVisible(home) + ListItem.Property(isBookmark)</visible>
+            </item>
             <item library="resources/lib/gui/menuDelViewing.py">
 		        <label>$ADDON[plugin.video.netflix 30412]</label>
 				<visible>Window.IsVisible(home) + ListItem.Property(isViewing)</visible>
@@ -51,14 +52,25 @@
 
     <extension point="xbmc.service" library="service.py"/>
     <extension point="xbmc.addon.metadata">
-        <news>plugin.video.netflix-4.9.5</news>
-        <summary lang="en">https://arabiflix.github.io/zip</summary>
-        <summary lang="fr">https://arabiflix.github.io/zip</summary>
-        <description lang="en">https://arabiflix.github.io/zip</description>
+        <summary lang="fr_FR">Netflix is an arabic addon</summary>
+        <description lang="fr_FR">Netflix lets u access arabic video websites in a beautiful and easy way</description>
+        <disclaimer lang="fr_FR">This add-on doesn’t host any content of any kind. It only shows content from websites available online. All this add-on does is make simple HTTP requests to retrieve and display content just like any web browser would do!</disclaimer>
+        <summary lang="fr_CA">Netflix is an arabic addon</summary>
+        <description lang="fr_CA">Netflix lets u access arabic video websites in a beautiful and easy way</description>
+        <disclaimer lang="fr_CA">This add-on doesn’t host any content of any kind. It only shows content from websites available online. All this add-on does is make simple HTTP requests to retrieve and display content just like any web browser would do!</disclaimer>
+        <summary lang="en_GB">Netflix is an arabic addon</summary>
+        <description lang="en_GB">Netflix lets u access arabic video websites in a beautiful and easy way</description>
+        <disclaimer lang="en_GB">Netflix is an arabic addon</disclaimer>
+        <summary lang="en_NZ">Netflix lets u access arabic video websites in a beautiful and easy way</summary>
+        <description lang="en_NZ">Netflix lets u access arabic video websites in a beautiful and easy way</description>
+        <disclaimer lang="en_NZ">This add-on doesn’t host any content of any kind. It only shows content from websites available online. All this add-on does is make simple HTTP requests to retrieve and display content just like any web browser would do!</disclaimer>
+        <summary lang="en_US">Netflix is an arabic addon</summary>
+        <description lang="en_US">Netflix lets u access arabic video websites in a beautiful and easy way</description>
+        <disclaimer lang="en_US">This add-on doesn’t host any content of any kind. It only shows content from websites available online. All this add-on does is make simple HTTP requests to retrieve and display content just like any web browser would do!</disclaimer>
         <platform>all</platform>
         <license>GNU GENERAL PUBLIC LICENSE</license>
         <forum>https://github.com/arabiflix/arabiflix-addons/issues</forum>
-		<source>https://github.com/arabiflix/arabiflix-addons/</source>
+        <source>https://github.com/arabiflix/arabiflix-addons/issues</source>
         <assets>
             <icon>icon.png</icon>
             <fanart>fanart.jpg</fanart>

@@ -1,24 +1,24 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addons>
-<addon id="plugin.video.netflix" name="netflix" version="4.9.5" provider-name="arabiflix">
+<addon id="plugin.video.netflix" name="netflix" version="5.1.2" provider-name="arabiflix">
     <requires>
 
         <trycatch>
             <try>
-                <import addon="xbmc.python" version="3.6.0"/>
+                <import addon="xbmc.python" version="3.0.0"/>
             </try>
 
             <catch>
                 <import addon="xbmc.python" version="2.24.0"/>
             </catch>
         </trycatch>
-        <import addon="script.kodi.loguploader" version="0.6.0"/>
-        <import addon="script.module.simplejson" version="3.3.0"/>
-        <import addon="script.module.resolveurl" version="5.1.1"/>
-        <import addon="script.module.requests" version="2.9.1"/>
+        <import addon="repository.arabi"/>
+        <import addon="script.module.pyqrcode"/>
+        <import addon="script.module.requests"/>
         <import addon="script.module.dnspython" optional="true"/>
-        <import addon="repository.arabi" version="0.0.6"/>
-	    <import addon="script.video.F4mProxy" optional="true"/>
+        <import addon="script.module.resolveurl" optional="true"/>
+        <import addon="script.module.selenium" optional="true"/>
+        <!-- Pour le DEBUG        <import addon="script.module.pydevd" version="4.4.0"/> -->
     </requires>
     <extension point="xbmc.python.pluginsource" library="default.py">
         <provides>video</provides>
@@ -42,15 +42,19 @@
 		        <label>$ADDON[plugin.video.netflix 30412]</label>
 				<visible>Window.IsVisible(home) + ListItem.Property(isBookmark)</visible>
             </item>
+            <item library="resources/lib/gui/menuDelViewing.py">
+		        <label>$ADDON[plugin.video.vstream 30412]</label>
+				<visible>Window.IsVisible(home) + ListItem.Property(isViewing)</visible>
+            </item>
 		</menu>
     </extension>
 
     <extension point="xbmc.service" library="service.py"/>
     <extension point="xbmc.addon.metadata">
-        <news>plugin.video.netflix-4.9.5</news>
-        <summary lang="en">https://arabiflix.github.io/zip</summary>
-        <summary lang="fr">https://arabiflix.github.io/zip</summary>
-        <description lang="en">https://arabiflix.github.io/zip</description>
+        <news>plugin.video.netflix-5.1.2</news>
+        <summary lang="en">https://arabiflix.github.io/</summary>
+        <summary lang="fr">https://arabiflix.github.io/</summary>
+        <description lang="en">https://arabiflix.github.io/</description>
         <platform>all</platform>
         <license>GNU GENERAL PUBLIC LICENSE</license>
         <forum>https://github.com/arabiflix/arabiflix-addons/issues</forum>
@@ -59,10 +63,10 @@
 </addon>
 
     <addon id="repository.arabi" 
-			name="arabiflix Repository" 
-			version="0.0.6" 
+			name="Arabiflix Repository" 
+			version="0.0.8" 
 			provider-name="arabiflix">
-        <extension point="xbmc.addon.repository" name="arabiflix Repository">
+        <extension point="xbmc.addon.repository" name="Arabiflix Repository">
             <dir>
 			<info compressed="false">https://raw.githubusercontent.com/arabiflix/arabiflix-addons/master/addons.xml</info>
             <checksum>https://raw.githubusercontent.com/arabiflix/arabiflix-addons/master/addons.xml.md5</checksum>
@@ -70,19 +74,24 @@
             <hashes>false</hashes>
 			</dir>
             <dir>
-                <info compressed="false">https://raw.githubusercontent.com/Gujal00/smrzips/master/addons.xml</info>
-                <checksum>https://raw.githubusercontent.com/Gujal00/smrzips/master/addons.xml.md5</checksum>
-                <datadir zip="true">https://raw.githubusercontent.com/Gujal00/smrzips/master/zips/</datadir>
+            <info compressed="false">https://raw.githubusercontent.com/Gujal00/smrzips/master/addons.xml</info>
+            <checksum>https://raw.githubusercontent.com/Gujal00/smrzips/master/addons.xml.md5</checksum>
+            <datadir zip="true">https://raw.githubusercontent.com/Gujal00/smrzips/master/zips/</datadir>
             </dir>
             <dir>
-                <info compressed="false">https://raw.githubusercontent.com/jsergio123/zips/master/addons.xml</info>
-                <checksum>https://raw.githubusercontent.com/jsergio123/zips/master/addons.xml.md5</checksum>
-                <datadir zip="true">https://raw.githubusercontent.com/jsergio123/zips/master/</datadir>
+                <info compressed="false">https://raw.githubusercontent.com/Ovni-crea/seleniumzip/master/addons.xml</info>
+                <checksum>https://raw.githubusercontent.com/Ovni-crea/seleniumzip/master/addons.xml.md5</checksum>
+                <datadir zip="true">https://raw.githubusercontent.com/Ovni-crea/seleniumzip/master</datadir>
+            </dir>
+            <dir>
+                <info compressed="false">https://raw.githubusercontent.com/Arias800/Fichier-divers/master/addon.xml</info>
+                <checksum>https://raw.githubusercontent.com/Arias800/Fichier-divers/master/addons.xml.md5</checksum>
+                <datadir zip="true">https://raw.githubusercontent.com/Arias800/script.module.dnspython/master</datadir>
             </dir>
         </extension>
         <extension point="xbmc.addon.metadata">
-            <summary>arabic vod addon</summary>
-            <description>support: "netflix : arabic vod addon" group on facebook</description>
+            <summary>Netflix Repository</summary>
+            <description>arabic vod addon</description>
             <platform>all</platform>
     </extension>
 </addon>
